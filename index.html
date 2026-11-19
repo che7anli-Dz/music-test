@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>تجربة الموسيقى</title>
+<style>
+  * { box-sizing: border-box; }
+  body { margin:0; background:#0A0F0C; color:#F5EFE6; font-family: system-ui, sans-serif; text-align:center; padding:40px 16px 120px; }
+  h1 { color:#E8A317; font-size:22px; margin:0 0 8px; }
+  p { color:#CBB; font-size:15px; line-height:1.7; }
+  .card { background:#16261D; border:1px solid #2A3F33; border-radius:16px; padding:18px; margin:14px auto; max-width:420px; }
+  #musicBtn { position:fixed; bottom:18px; inset-inline-end:18px; z-index:99; background:#E8A317; color:#0A0F0C; border:0; border-radius:999px; padding:12px 20px; font-size:15px; font-weight:700; cursor:pointer; box-shadow:0 6px 18px rgba(0,0,0,.45); }
+</style>
+</head>
+<body>
+  <h1>صفحة تجريبية</h1>
+  <p>الموسيقى تشعل مع أول لمسة في الصفحة.<br>الزر الذهبي من تحت يطفيها ويشعلها.</p>
+  <div class="card">هنا يبان المنيو تاع الزبون في العادة</div>
+  <div class="card">طبق تجريبي 1</div>
+  <div class="card">طبق تجريبي 2</div>
+
+  <audio id="bgm" src="https://muse.ai/files/1369061059621354/2972798753119459/y1p5l3mfxoqs9l5pi7y4ico2/summer.m4a" loop preload="auto"></audio>
+  <button id="musicBtn">🔊 الموسيقى</button>
+
+<script>
+  var bgm = document.getElementById('bgm');
+  var btn = document.getElementById('musicBtn');
+  function playMusic() {
+    bgm.volume = 0.7;
+    var p = bgm.play();
+    if (p && p.catch) p.catch(function(){});
+  }
+  document.addEventListener('pointerdown', function once() {
+    playMusic();
+    document.removeEventListener('pointerdown', once);
+  });
+  btn.addEventListener('click', function (e) {
+    e.stopPropagation();
+    if (bgm.paused) { playMusic(); btn.textContent = '🔊 الموسيقى'; }
+    else { bgm.pause(); btn.textContent = '🔇 الموسيقى'; }
+  });
+</script>
+</body>
+</html>
