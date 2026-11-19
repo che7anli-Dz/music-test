@@ -3,13 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>تجربة الموسيقى</title>
+<title>تجربة الموسيقى — الترحيب بالأسطوانة</title>
 <style>
   * { box-sizing: border-box; }
   body { margin:0; background:#0A0F0C; color:#F5EFE6; font-family: system-ui, sans-serif; text-align:center; padding:40px 16px 120px; }
   h1 { color:#E8A317; font-size:22px; margin:0 0 8px; }
   p { color:#CBB; font-size:15px; line-height:1.7; }
   .card { background:#16261D; border:1px solid #2A3F33; border-radius:16px; padding:18px; margin:14px auto; max-width:420px; }
+  /* Welcome screen: the rotating 5-face prism video fills the screen.
+     The video itself carries the text «مرحباً بيك عندنا / أحلى الأطباق تستناك» underneath the panels. */
+  #welcome { position:fixed; inset:0; z-index:200; background:#0A0F0C; display:flex; flex-direction:column; align-items:center; justify-content:flex-end; padding:0 0 42px; text-align:center; }
+  #welcome.hide { opacity:0; pointer-events:none; transition: opacity .6s ease; }
+  #welcome video { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  #enterBtn { position:relative; z-index:2; background:#E8A317; color:#0A0F0C; border:0; border-radius:999px; padding:14px 34px; font-size:16px; font-weight:700; cursor:pointer; box-shadow:0 10px 24px rgba(232,163,23,.35); animation: pulseBtn 1.4s ease-in-out infinite alternate; }
+  @keyframes pulseBtn { from { transform: scale(1); } to { transform: scale(1.05); } }
+  /* Music control: professional corner icon only, no word «موسيقى» */
   #musicBtn { position:fixed; bottom:18px; inset-inline-end:18px; z-index:99; width:46px; height:46px; border-radius:50%; background:rgba(10,15,12,.72); border:1px solid rgba(232,163,23,.55); color:#E8A317; display:flex; align-items:center; justify-content:center; cursor:pointer; box-shadow:0 6px 18px rgba(0,0,0,.45); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); padding:0; }
   #musicBtn svg { width:22px; height:22px; display:block; }
   #musicBtn .waves { display:none; }
@@ -22,8 +30,14 @@
 </style>
 </head>
 <body>
+  <!-- First touch = welcome tap: starts the music (browsers block true autoplay) and enters the menu -->
+  <div id="welcome">
+    <video src="prism.mp4" autoplay muted loop playsinline></video>
+    <button id="enterBtn">ادخل</button>
+  </div>
+
   <h1>صفحة تجريبية</h1>
-  <p>الموسيقى تشعل مع أول لمسة في الصفحة.<br>الزر الصغير في القنت من تحت يطفيها ويشعلها.</p>
+  <p>الموسيقى تشعل كي تضغط «ادخل».<br>الزر الصغير في القنت من تحت يطفيها ويشعلها.</p>
   <div class="card">هنا يبان المنيو تاع الزبون في العادة</div>
   <div class="card">طبق تجريبي 1</div>
   <div class="card">طبق تجريبي 2</div>
@@ -46,14 +60,21 @@
 <script>
   var bgm = document.getElementById('bgm');
   var btn = document.getElementById('musicBtn');
+  var welcome = document.getElementById('welcome');
+  var enterBtn = document.getElementById('enterBtn');
   function playMusic() {
     bgm.volume = 0.7;
     var p = bgm.play();
     if (p && p.catch) p.catch(function(){});
   }
-  document.addEventListener('pointerdown', function once() {
+  function enter() {
     playMusic();
-    document.removeEventListener('pointerdown', once);
+    welcome.classList.add('hide');
+    setTimeout(function () { welcome.style.display = 'none'; }, 700);
+  }
+  enterBtn.addEventListener('click', enter);
+  welcome.addEventListener('pointerdown', function (e) {
+    if (e.target !== enterBtn) enter();
   });
   btn.addEventListener('click', function (e) {
     e.stopPropagation();
