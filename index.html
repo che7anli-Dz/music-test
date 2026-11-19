@@ -10,18 +10,38 @@
   h1 { color:#E8A317; font-size:22px; margin:0 0 8px; }
   p { color:#CBB; font-size:15px; line-height:1.7; }
   .card { background:#16261D; border:1px solid #2A3F33; border-radius:16px; padding:18px; margin:14px auto; max-width:420px; }
-  #musicBtn { position:fixed; bottom:18px; inset-inline-end:18px; z-index:99; background:#E8A317; color:#0A0F0C; border:0; border-radius:999px; padding:12px 20px; font-size:15px; font-weight:700; cursor:pointer; box-shadow:0 6px 18px rgba(0,0,0,.45); }
+  #musicBtn { position:fixed; bottom:18px; inset-inline-end:18px; z-index:99; width:46px; height:46px; border-radius:50%; background:rgba(10,15,12,.72); border:1px solid rgba(232,163,23,.55); color:#E8A317; display:flex; align-items:center; justify-content:center; cursor:pointer; box-shadow:0 6px 18px rgba(0,0,0,.45); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); padding:0; }
+  #musicBtn svg { width:22px; height:22px; display:block; }
+  #musicBtn .waves { display:none; }
+  #musicBtn.playing .waves { display:block; }
+  #musicBtn .cross { display:block; }
+  #musicBtn.playing .cross { display:none; }
+  #musicBtn.playing .wave { animation: pulse 1s ease-in-out infinite alternate; transform-origin:center; }
+  #musicBtn.playing .wave2 { animation-delay:.35s; }
+  @keyframes pulse { from { opacity:.35; } to { opacity:1; } }
 </style>
 </head>
 <body>
   <h1>صفحة تجريبية</h1>
-  <p>الموسيقى تشعل مع أول لمسة في الصفحة.<br>الزر الذهبي من تحت يطفيها ويشعلها.</p>
+  <p>الموسيقى تشعل مع أول لمسة في الصفحة.<br>الزر الصغير في القنت من تحت يطفيها ويشعلها.</p>
   <div class="card">هنا يبان المنيو تاع الزبون في العادة</div>
   <div class="card">طبق تجريبي 1</div>
   <div class="card">طبق تجريبي 2</div>
 
   <audio id="bgm" src="summer.m4a" loop preload="auto"></audio>
-  <button id="musicBtn">🔊 الموسيقى</button>
+  <button id="musicBtn" aria-label="الصوت">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" fill="currentColor" stroke="none"></polygon>
+      <g class="waves">
+        <path class="wave wave1" d="M15.5 8.5a5 5 0 0 1 0 7"></path>
+        <path class="wave wave2" d="M18.5 5.5a9 9 0 0 1 0 13"></path>
+      </g>
+      <g class="cross">
+        <line x1="16" y1="9" x2="22" y2="15"></line>
+        <line x1="22" y1="9" x2="16" y2="15"></line>
+      </g>
+    </svg>
+  </button>
 
 <script>
   var bgm = document.getElementById('bgm');
@@ -37,9 +57,11 @@
   });
   btn.addEventListener('click', function (e) {
     e.stopPropagation();
-    if (bgm.paused) { playMusic(); btn.textContent = '🔊 الموسيقى'; }
-    else { bgm.pause(); btn.textContent = '🔇 الموسيقى'; }
+    if (bgm.paused) { playMusic(); btn.classList.add('playing'); }
+    else { bgm.pause(); btn.classList.remove('playing'); }
   });
+  bgm.addEventListener('play', function () { btn.classList.add('playing'); });
+  bgm.addEventListener('pause', function () { btn.classList.remove('playing'); });
 </script>
 </body>
 </html>
